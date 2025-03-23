@@ -1,15 +1,15 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import DealerLogin from "./pages/DealerLogin";
-import DealerLanding from "./pages/DealerLanding";
-import Inventory from "./pages/Inventory";
-import Landing from "./pages/Landing";
-import DealerSignup from "./pages/DealerSignup";
-import ShopkeeperLogin from "./pages/ShopkeeperLogin";
-import ShopkeeperLanding from "./pages/ShopkeeperLanding";
-import ShopkeeperSignup from "./pages/ShopkeeperSignup";
-import "./App.css";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
+import Navbar from "./components/Navbar"
+import DealerLogin from "./pages/DealerLogin"
+import DealerLanding from "./pages/DealerLanding"
+import Inventory from "./pages/Inventory"
+import Landing from "./pages/Landing"
+import DealerSignup from "./pages/DealerSignup"
+import ShopkeeperLogin from "./pages/ShopkeeperLogin"
+import ShopkeeperLanding from "./pages/ShopkeeperLanding"
+import ShopkeeperSignup from "./pages/ShopkeeperSignup"
+import WorkflowPage from "./pages/WorkflowPage"
+import "./App.css"
 
 function App() {
   return (
@@ -25,10 +25,12 @@ function App() {
           <Route path="/shopkeeper_login" element={<ShopkeeperLogin />} />
           <Route path="/shopkeeper_landing" element={<ShopkeeperLanding />} />
           <Route path="/shopkeeper_signup" element={<ShopkeeperSignup />} />
+          <Route path="/workflow" element={<WorkflowPage />} />
         </Routes>
       </div>
     </Router>
-  );
+  )
 }
 
-export default App;
+export default App
+

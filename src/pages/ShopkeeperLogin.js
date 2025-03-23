@@ -1,66 +1,84 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import "../pages/style.css";
+"use client"
 
-function ShopkeeperLogin() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+import { useState } from "react"
+import { useNavigate, Link } from "react-router-dom"
+import axios from "axios"
+import "../styles/Auth.css"
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+const ShopkeeperLogin = () => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  })
+  const [error, setError] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const navigate = useNavigate()
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setError("")
+
     try {
-      const response = await axios.post("http://localhost:8000/shopkeeper/login", { email, password });
-      alert(response.data.message);
-      navigate("/shopkeeper_landing");
-    } catch (error) {
-      alert(error.response?.data?.detail || "Login failed");
+      const response = await axios.post("http://localhost:8000/shopkeeper/login", formData)
+
+      // Store shopkeeper ID in localStorage
+      localStorage.setItem("shopkeeperId", response.data.shopkeeper_id)
+
+      // Redirect to home page (shopkeepers don't have direct inventory access)
+      navigate("/")
+    } catch (err) {
+      console.error("Login error:", err)
+      setError(err.response?.data?.detail || "Login failed. Please check your credentials.")
+    } finally {
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
-      <div className="card shadow-lg p-4">
-        <h2 className="text-center mb-4">Shopkeeper Login</h2>
-        <form onSubmit={handleLogin}>
-          <div className="mb-3">
-            <label htmlFor="email" className="form-label">Email</label>
-            <input
-              type="email"
-              className="form-control"
-              id="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+    <div className="auth-container">
+      <div className="auth-form-container">
+        <h2>Shopkeeper Login</h2>
+
+        {error && <div className="auth-error">{error}</div>}
+
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required />
           </div>
-          <div className="mb-3">
-            <label htmlFor="password" className="form-label">Password</label>
+
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
             <input
               type="password"
-              className="form-control"
               id="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
               required
             />
           </div>
-          <div className="mb-3 form-check">
-            <input type="checkbox" className="form-check-input" id="rememberMe" />
-            <label className="form-check-label" htmlFor="rememberMe">Remember me</label>
-          </div>
-          <button type="submit" className="btn btn-dark w-100">Login</button>
+
+          <button type="submit" className="auth-button" disabled={isLoading}>
+            {isLoading ? "Logging in..." : "Login"}
+          </button>
         </form>
-        <div className="mt-4 text-center">
-          <p>Don't have an account?</p>
-          <a href="/shopkeeper_signup" className="btn btn-outline-dark w-100">Register Here</a>
-        </div>
+
+        <p className="auth-redirect">
+          Don't have an account? <Link to="/shopkeeper/signup">Sign Up</Link>
+        </p>
       </div>
     </div>
-  );
+  )
 }
 
-export default ShopkeeperLogin;
+export default ShopkeeperLogin
+
